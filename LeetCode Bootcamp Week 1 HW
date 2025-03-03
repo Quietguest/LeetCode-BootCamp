@@ -20,3 +20,40 @@ class Solution(object):
                 right -= 1
                 
         return ans
+
+
+class Solution(object):
+    def productExceptSelf(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        n = len(nums)
+        pre = [1] * n
+        for i in range(1, n):
+            pre[i] = pre[i-1]*nums[i-1]
+        
+        las = [1] * n
+        for i in range(n-2, -1, -1):
+            las[i] = las[i+1]*nums[i+1]
+
+        return [i * j for i,j in zip(pre,las)]
+
+
+class Solution(object):
+    def sortColors(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: None Do not return anything, modify nums in-place instead.
+        """
+        low, mid, high = 0, 0, len(nums)-1
+        while mid <= high:
+            if nums[mid] == 0:
+                nums[low], nums[mid] = nums[mid], nums[low]
+                low += 1
+                mid += 1
+            elif nums[mid] == 1:
+                mid += 1
+            else:
+                nums[mid], nums[high] = nums[high], nums[mid]
+                high -= 1
