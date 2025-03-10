@@ -1,0 +1,77 @@
+8. String to Integer (atoi)
+class Solution(object):
+    def myAtoi(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        s = s.strip() # Remove the space
+        if not s:
+            return 0
+        ans = 0
+        sign = 1
+        i = 1
+        maximum = 2 ** 31 - 1
+        minimum = -2 ** 31
+        boundary = 2 ** 31 // 10
+        # Symbol judgment
+        if s[0] == '-':
+            sign = -1
+        elif s[0] != '+':
+            i = 0
+        for j in s[i:]:
+            # To judge whether it is a digit
+            if not '0' <= j <= '9':
+                break
+            # To judge whether it is out of boundary:
+            # 1. ans > 2 ** 31 // 10, indicating that the conversion will exceed the boundary
+            # 2. ans = 2 ** 31 // 10 but the last digit exceeds the unit digit of maximum or minimum, indicating that the conversion will exceed the boundary
+            # 3. Rounding
+            if ans > boundary or ans == boundary and (j > '7' if sign == 1 else j > '8'):
+                return minimum if sign == -1 else maximum
+            # String conversion: Returns the Unicode code value of character j in the ASCII table minus the Unicode code value of 0 in the ASCII table, which is equal to the number 0-9
+            ans = ans*10 + ord(j) - ord('0')
+        return ans * sign
+
+438. Find All Anagrams in a String
+class Solution(object):
+    def findAnagrams(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: List[int]
+        """
+        if len(s) < len(p):
+            return []
+        # Using Counter() to compute frequency of letters
+        s_count = Counter()
+        p_count = Counter(p)
+        window_size = len(p)
+        ans = []
+        for i in range(len(s)):
+            # Add a letter and implement 1 of its frequency
+            s_count[s[i]] += 1
+            # When i exceeds the window boundary, we should remove the letter frequency to the left or reduce it by 1.
+            if i >= window_size:
+                if s_count[s[i - window_size]] == 1:
+                    del s_count[s[i - window_size]]
+                else:
+                    s_count[s[i - window_size]] -= 1
+            # When the frequencies are the same, the answer appears.
+            if s_count == p_count:
+                ans.append(i - window_size + 1)
+        return ans
+
+151. Reverse Words in a String
+class Solution(object):
+    def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        # Remove all the spaces
+        words = s.strip().split()
+        # Reverse the sequence
+        words.reverse()
+        # Using spaces to connect each word
+        return ' '.join(words)
