@@ -1,0 +1,90 @@
+232. Implement Queue using Stacks
+class MyQueue(object):
+
+    def __init__(self):
+        self.in_stack = []
+        self.out_stack = []
+
+    def push(self, x):
+        """
+        :type x: int
+        :rtype: None
+        """
+        self.in_stack.append(x)
+        
+
+    def pop(self):
+        """
+        :rtype: int
+        """
+        self._in_to_out()
+        return self.out_stack.pop()
+
+    def peek(self):
+        """
+        :rtype: int
+        """
+        self._in_to_out()
+        return self.out_stack[-1]
+        
+    def empty(self):
+        """
+        :rtype: bool
+        """
+        return not self.in_stack and not self.out_stack
+
+    def _in_to_out(self):
+        if not self.out_stack:
+            while self.in_stack:
+                self.out_stack.append(self.in_stack.pop())
+
+394. Decode String
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        num_stack = []
+        str_stack = []
+        current_num = 0
+        current_str = ""
+
+        for char in s:
+            if char.isdigit():
+                current_num = current_num * 10 + int(char)
+            elif char == '[':
+                num_stack.append(current_num)
+                str_stack.append(current_str)
+                current_num = 0
+                current_str = ""
+            elif char == ']':
+                repeat_times = num_stack.pop()
+                prev_str = str_stack.pop()
+                current_str = prev_str + current_str * repeat_times
+            else:
+                current_str += char
+
+        return current_str
+
+2327. Number of People Aware of a Secret
+class Solution(object):
+    def peopleAwareOfSecret(self, n, delay, forget):
+        """
+        :type n: int
+        :type delay: int
+        :type forget: int
+        :rtype: int
+        """
+        mod = 10**9 + 7
+        p = [0] * n
+        p[0] = 1
+        count = 0
+
+        for i, day in enumerate(p):
+            if i + delay >= n:
+                count += day
+            for j in range(i + delay, min(i + forget, n)):
+                p[j] = (p[j] + day) % mod
+        
+        return (p[-1] + count) % mod
