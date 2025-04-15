@@ -1,0 +1,42 @@
+236. Lowest Common Ancestor of a Binary Tree
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        if not root or p == root or q == root:
+            return root
+        left = self.lowestCommonAncestor(root.left,p,q)
+        right = self.lowestCommonAncestor(root.right,p,q)
+        if not left:
+            return right
+        if not right:
+            return left
+        return root
+347. Top K Frequent Elements
+import heapq
+
+class Solution(object):
+    def topKFrequent(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        frequencyMap = {}
+        for num in nums:
+            if num in frequencyMap:
+                frequencyMap[num] += 1
+            else:
+                frequencyMap[num] = 1
+        minHeap = []
+        for num, freq in frequencyMap.items():
+            if len(minHeap) < k:
+                heapq.heappush(minHeap, (freq, num))
+            elif freq > minHeap[0][0]:
+                heapq.heappushpop(minHeap, (freq, num))
+        topK = [num for freq, num in minHeap]
+        return topK
