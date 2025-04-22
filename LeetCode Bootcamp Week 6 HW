@@ -1,0 +1,70 @@
+199. Binary Tree Right Side View
+class Solution(object):
+    def rightSideView(self, root):
+        """
+        :type root: Optional[TreeNode]
+        :rtype: List[int]
+        """
+        res = []
+        def dfs(node, depth):
+            if not node:
+                return 
+            if depth == len(res):
+                res.append(node.val)
+            dfs(node.right, depth + 1)
+            dfs(node.left, depth + 1)
+        
+        dfs(root, 0)
+        return res
+994. Rotting Oranges
+class Solution(object):
+    def orangesRotting(self, grid):
+        """
+        :type grid: List[List[int]]
+        :rtype: int
+        """
+        row = len(grid)
+        col = len(grid[0])
+        rotten = {(i,j) for i in range(row) for j in range(col) if grid[i][j] == 2}
+        fresh = {(i,j) for i in range(row) for j in range(col) if grid[i][j] == 1}
+        time = 0
+        while fresh:
+            if not rotten: return -1
+            rotten = {
+                (i + di, j + dj)
+                for i, j in rotten
+                for di, dj in [(0,1), (0,-1), (1,0), (-1,0)]
+                if (i + di,j + dj) in fresh
+            }
+            fresh -= rotten
+            time += 1
+        return time
+210. Course Schedule II
+from collections import defaultdict, deque
+
+class Solution(object):
+    def findOrder(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: List[int]
+        """
+        graph = defaultdict(list)
+        in_degree = [0] * numCourses
+
+        for course, pre in prerequisites:
+            graph[pre].append(course)
+            in_degree[course] += 1
+
+        queue = deque([i for i in range(numCourses) if in_degree[i] == 0])
+        order = []
+
+        while queue:
+            cur = queue.popleft()
+            order.append(cur)
+            for neighbor in graph[cur]:
+                in_degree[neighbor] -= 1
+                if in_degree[neighbor] == 0:
+                    queue.append(neighbor)
+
+        return order if len(order) == numCourses else []
